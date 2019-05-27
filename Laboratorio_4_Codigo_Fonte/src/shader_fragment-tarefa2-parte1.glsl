@@ -40,11 +40,7 @@ void main()
     vec4 n = normalize(normal);
 
     // Vetor que define o sentido da fonte de luz em relação ao ponto atual.
-    vec4 l = normalize(vec4(1.0,1.0,0.5,0.0));
-
-    vec4 l_spotlight = vec4(0.0,2.0,1.0,1.0);
-    vec4 v_spotlight = vec4(0.0,-1.0,0.0,1.0);
-    float a_spotlight = radians(30);
+    vec4 l = normalize(camera_position);
 
     // Vetor que define o sentido da câmera em relação ao ponto atual.
     vec4 v = normalize(camera_position - p);
@@ -111,23 +107,7 @@ void main()
 
     // Cor final do fragmento calculada com uma combinação dos termos difuso,
     // especular, e ambiente. Veja slide 133 do documento "Aula_17_e_18_Modelos_de_Iluminacao.pdf".
-    color = vec3(0.0,0.0,0.0);//lambert_diffuse_term + phong_specular_term;
-    // spotlight
-
-    vec4 p_minus_l_vec = p - l_spotlight;
-    vec4 v_spotlight_vector = v_spotlight - l_spotlight;
-
-    vec4 light_dir_test = p_minus_l_vec/length(p_minus_l_vec);
-    vec4 v_spotlight_test = (v_spotlight_vector/length(v_spotlight_vector));
-
-    if (dot(light_dir_test, v_spotlight_test) >= cos(a_spotlight)) {
-
-        vec4 r_spotlight = -p_minus_l_vec+2*n*dot(n,p_minus_l_vec);
-
-        color += Kd*I*max(0,dot(n,l_spotlight)) + Ks*I*max(0,dot(r_spotlight,v));
-    }
-
-    color += ambient_term;
+    color = lambert_diffuse_term + ambient_term + phong_specular_term;
 
     // Cor final com correção gamma, considerando monitor sRGB.
     // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
